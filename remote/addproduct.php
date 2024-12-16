@@ -11,9 +11,29 @@ if(isset($_POST['add_product'])){
 
   $product_stocks = isset($_POST['product_stocks']) ? $conn->real_escape_string($_POST['product_stocks']) : '';
 
-  $product_picture = isset($_POST['product_picture']) ? $conn->real_escape_string($_POST['product_picture'])  : '';
+  $newFileName = '';
 
-  $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks)VALUES('$product_name', '$product_price', '$product_details', '$product_picture', '$product_stocks')";
+    $file = $_FILES["picture"];
+    $fileName = $file["name"];
+    $fileTmpName = $file["tmp_name"];
+    $fileSize = $file["size"];
+    $fileError = $file["error"];
+
+    if ($fileError === 0) {
+        $accepted_type = array('jpg', 'jpeg', 'gif', 'png', 'jfif');
+        $getExtension = explode('.', $fileName);
+        $extension = strtolower(end($getExtension));
+
+        if (in_array($extension, $accepted_type)) {
+            if ($fileSize < 1000000) {
+                $newFileName = uniqid('img_', true) . "." . $extension;
+                $fileDestination = '../src/images/' . $newFileName;
+                move_uploaded_file($fileTmpName, $fileDestination);
+            } 
+        } 
+    }
+
+  $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks)VALUES('$product_name', '$product_price', '$product_details', '$newFileName', '$product_stocks')";
 
   $result = $conn->query($query);
 
