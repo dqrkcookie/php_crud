@@ -3,21 +3,24 @@
 include_once('../config/connect.php');
 
 if(isset($_POST['signup'])){
-  $name = isset($_POST['name']) ? $conn->real_escape_string($_POST['name']) : '';
-  $username = isset($_POST['username']) ? $conn->real_escape_string($_POST['username']) : '';
-  $password = isset($_POST['password']) ? $conn->real_escape_string(password_hash($_POST['password'], PASSWORD_DEFAULT)) : '';
+  $name = isset($_POST['name']) ? $_POST['name'] : '';
+  $username = isset($_POST['username']) ? $_POST['username'] : '';
+  $password = isset($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : '';
 
-  $query = "INSERT INTO users_tbl(name,username,password)VALUES('$name', '$username', '$password')";
+  $query = "INSERT INTO users_tbl(name,username,password)VALUES(?, ?, ?)";
+  $stmt = $pdo->prepare($query);
+  $stmt->bindParam(1, $name);
+  $stmt->bindParam(2, $username);
+  $stmt->bindParam(3, $password);
+  $stmt->execute();
 
-  $result = $conn->query($query);
-
-  if(!$result){
-    die('Unable to create account');
+  if(!$stmt->execute()){ 
+    die('Unable to create an account');
   } else {
     header("Location: ../index.php?signup=success");
   }
 }
 
-$conn->close();
+$pdo = null;
 
 ?>

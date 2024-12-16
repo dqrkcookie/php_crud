@@ -1,14 +1,23 @@
 <?php
 
-	try{
-		$conn = new mysqli('localhost', 'root', '', 'shopee_db', 3307);
+try{
+	$username = 'root';
+	$password = '';
+	$host = 'localhost';
+	$dbname = 'shopee_db';
+	$port = 3307;
 
-		if($conn->connect_error){
-			die('Failed connecting to Database' . $conn->connect_error);
-		} 
-	} catch(mysqli_sql_exception $e){
-        error_log('Server is down: ' . $e->getMessage);
-		die();
+	$dsn = 'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbname;
+
+	$pdo = new PDO($dsn, $username, $password);
+	$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+
+	if(!$pdo){
+		die('Connection close!');
 	}
+}catch(PDOException $e){
+	error_log('Connection failed: ' . $e->getMessage());
+	die('Server is down');
+}
 
 ?>

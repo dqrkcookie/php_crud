@@ -9,7 +9,8 @@ if(empty($_SESSION['username'])){
 
 $query = "SELECT * FROM product_tbl ORDER BY productID";
 
-$result = $conn->query($query);
+$stmt = $pdo->prepare($query);
+$stmt->execute();
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +26,7 @@ $result = $conn->query($query);
    <nav class="navbar">
         <div class="navbar-container">
             <div class="logo">
-                <a href="index.php">Shapi</a>
+                <a href="home.php">Shapi</a>
             </div>
             <div class="nav-buttons">
                 <button popovertarget="add_product" class="add-item-btn">+ Add Product</button>
@@ -63,46 +64,46 @@ $result = $conn->query($query);
             </tr>
           </thead>
           <tbody>
-          <?php while($data = $result->fetch_array()) {?>
+          <?php while($data = $stmt->fetch()) {?>
             <tr> 
-              <td><?php echo $data['productName']; ?></td> 
-              <td id="img"><img src="../images/<?php echo $data['productPicture']; ?>" alt="Product Image" class="product-img"></td> 
-              <td><?php echo $data['productDetails']; ?></td> 
-              <td><?php echo '₱' . $data['productPrice']; ?></td> 
-              <td><?php echo $data['productStocks']; ?></td>
+              <td><?php echo $data->productName; ?></td> 
+              <td id="img"><img src="../images/<?php echo $data->productPicture; ?>" alt="Product Image" class="product-img"></td> 
+              <td><?php echo $data->productDetails; ?></td> 
+              <td><?php echo '₱' . $data->productPrice; ?></td> 
+              <td><?php echo $data->productStocks; ?></td>
               <td>
                 <ul id="actions">
-                  <li><button class="btn" popovertarget="view_product-<?php echo $data['productID']; ?>">View</button></li>
-                  <li><button class="btn" popovertarget="edit_product-<?php echo $data['productID']; ?>">Edit</button></li>
-                  <li><a href="../../remote/delete.php?id=<?php echo $data['productID']; ?>"><button class="btn">Delete</button></a></li>
+                  <li><button class="btn" popovertarget="view_product-<?php echo $data->productID; ?>">View</button></li>
+                  <li><button class="btn" popovertarget="edit_product-<?php echo $data->productID; ?>">Edit</button></li>
+                  <li><a href="../../remote/delete.php?id=<?php echo $data->productID; ?>"><button class="btn">Delete</button></a></li>
                 </ul>
               </td>
             </tr>
 
-            <div class="view_product" id="view_product-<?php echo $data['productID']; ?>" popover>
+            <div class="view_product" id="view_product-<?php echo $data->productID; ?>" popover>
               <h1>About the product</h1>
-              <span>Name: <?php echo $data['productName'] ?></span>
-              <img src="../images/<?php echo $data['productPicture'] ?>"></img>
-              <span>Details: <?php echo $data['productDetails'] ?></span>
-              <span>Price: <?php echo $data['productPrice'] ?></span>
-              <span>Stocks: <?php echo $data['productStocks'] ?></span>
+              <span>Name: <?php echo $data->productName; ?></span>
+              <img src="../images/<?php echo $data->productPicture; ?>"></img>
+              <span>Details: <?php echo $data->productDetails; ?></span>
+              <span>Price: <?php echo $data->productPrice; ?></span>
+              <span>Stocks: <?php echo $data->productStocks; ?></span>
             </div>
 
-            <div class="edit_product" id="edit_product-<?php echo $data['productID']; ?>" popover>
+            <div class="edit_product" id="edit_product-<?php echo $data->productID; ?>" popover>
               <h1>Edit product</h1>
               <br>
               <form action="../../remote/edit.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="productID" value="<?php echo $data['productID']; ?>">
+                <input type="hidden" name="productID" value="<?php echo $data->productID; ?>">
                 <label>Name</label>
-                <input type="text" name="name" value="<?php echo $data['productName']; ?>">
+                <input type="text" name="name" value="<?php echo $data->productName; ?>">
                 <label>Picture</label>
                 <input type="file" name="picture">
                 <label>Details</label>
-                <textarea name="details"><?php echo $data['productDetails']; ?></textarea>
+                <textarea name="details"><?php echo $data->productDetails; ?></textarea>
                 <label>Price</label>
-                <input type="text" name="price" value="<?php echo $data['productPrice']; ?>">
+                <input type="text" name="price" value="<?php echo $data->productPrice; ?>">
                 <label>Stock</label>
-                <input type="text" name="stock" value="<?php echo $data['productStocks']; ?>">
+                <input type="text" name="stock" value="<?php echo $data->productStocks; ?>">
                 <input type="submit" value="Save changes" name="edit_btn" id="edit_btn">
               </form>
             </div>

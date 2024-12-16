@@ -34,14 +34,27 @@ if (isset($_POST['edit_btn'])) {
     }
 
     if ($picture) {
-        $query = "UPDATE product_tbl SET productName = '$name', productDetails = '$details', productPrice = '$price', productStocks = '$stock', productPicture = '$picture' WHERE productID = '$productID'";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, productPicture = ? WHERE productID = ?";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(1, $name);
+        $stmt->bindParam(2, $details);
+        $stmt->bindParam(3, $price);
+        $stmt->bindParam(4, $stock);
+        $stmt->bindParam(5, $picture);
+        $stmt->bindParam(6, $productID);
     } else {
-        $query = "UPDATE product_tbl SET productName = '$name', productDetails = '$details', productPrice = '$price', productStocks = '$stock' WHERE productID = '$productID'";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ? WHERE productID = ?";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(1, $name);
+        $stmt->bindParam(2, $details);
+        $stmt->bindParam(3, $price);
+        $stmt->bindParam(4, $stock);
+        $stmt->bindParam(5, $productID);
     }
 
-    $result = $conn->query($query);
-
-    if ($result) {
+    if ($stmt->execute()) {
         header("Location: ../src/pages/home.php?updated");
         exit();
     } else {
@@ -49,6 +62,6 @@ if (isset($_POST['edit_btn'])) {
     }
 }
 
-$conn->close();
+$pdo = null;
 
 ?>

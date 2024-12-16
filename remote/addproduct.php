@@ -3,13 +3,13 @@
 include_once('../config/connect.php');
 
 if(isset($_POST['add_product'])){
-  $product_name = isset($_POST['product_name']) ? $conn->real_escape_string($_POST['product_name']) : '';
+  $product_name = isset($_POST['product_name']) ? $_POST['product_name'] : '';
 
-  $product_details = isset($_POST['product_details']) ? $conn->real_escape_string($_POST['product_details']) : '';
+  $product_details = isset($_POST['product_details']) ? $_POST['product_details'] : '';
 
-  $product_price = isset($_POST['product_price']) ? $conn->real_escape_string($_POST['product_price']) : '';
+  $product_price = isset($_POST['product_price']) ? $_POST['product_price'] : '';
 
-  $product_stocks = isset($_POST['product_stocks']) ? $conn->real_escape_string($_POST['product_stocks']) : '';
+  $product_stocks = isset($_POST['product_stocks']) ? $_POST['product_stocks'] : '';
 
   $newFileName = '';
 
@@ -33,12 +33,17 @@ if(isset($_POST['add_product'])){
         } 
     }
 
-  $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks)VALUES('$product_name', '$product_price', '$product_details', '$newFileName', '$product_stocks')";
+  $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks)VALUES(?, ?, ?, ?, ?)";
 
-  $result = $conn->query($query);
+  $stmt = $pdo->prepare($query);
+  $stmt->bindParam(1, $product_name);
+  $stmt->bindParam(2, $product_price);
+  $stmt->bindParam(3, $product_details);
+  $stmt->bindParam(4, $newFileName);
+  $stmt->bindParam(5, $product_stocks);
 
-  if(!$result){
-    echo "<sript> window.alert('Failed to add product');
+  if(!$stmt->execute()){
+    echo "<script> window.alert('Failed to add product');
       window.location.href = '../src/pages/home.php';
     </script>";
   } else {
@@ -46,5 +51,6 @@ if(isset($_POST['add_product'])){
   }
 }
 
-$conn->close();
+$pdo = null;
+
 ?>

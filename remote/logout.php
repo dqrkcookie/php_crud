@@ -10,4 +10,6 @@ if(isset($_POST['logout'])){
   echo "<script>window.location.href = '../index.php';</script>";
 }
 
+$pdo = null;
+
 ?>
