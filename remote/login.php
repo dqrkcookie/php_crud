@@ -15,7 +15,7 @@ if(isset($_POST['login'])){
 
   if(password_verify($password, $data['password'])){
     $_SESSION['username'] = $username;
-    header("Location: ../src/pages/home.php");
+    echo "<script> window.location.href = '../src/pages/home.php'; </script>";
   } else {
     header("Location: ../index.php");
   }

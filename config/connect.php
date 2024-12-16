@@ -6,8 +6,9 @@
 		if($conn->connect_error){
 			die('Failed connecting to Database' . $conn->connect_error);
 		} 
-	} catch(mysqli_sql_exception){
-		die('Server is down');
+	} catch(mysqli_sql_exception $e){
+        error_log('Server is down: ' . $e->getMessage);
+		die();
 	}
 
 ?>

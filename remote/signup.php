@@ -2,7 +2,7 @@
 
 include_once('../config/connect.php');
 
-is(isset($_POST['signup'])){
+if(isset($_POST['signup'])){
   $name = isset($_POST['name']) ? $conn->real_escape_string($_POST['name']) : '';
   $username = isset($_POST['username']) ? $conn->real_escape_string($_POST['username']) : '';
   $password = isset($_POST['password']) ? $conn->real_escape_string(password_hash($_POST['password'], PASSWORD_DEFAULT)) : '';
@@ -19,4 +19,5 @@ is(isset($_POST['signup'])){
 }
 
 $conn->close();
+
 ?>

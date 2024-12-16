@@ -17,7 +17,8 @@ $result = $conn->query($query);
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shapi</title>
+  <title>Lorem</title>
+  <link rel="icon" href="../images/icon/icon.jpg">
   <link rel="stylesheet" href="../style/home.css">
 </head>
 <body>
@@ -28,6 +29,11 @@ $result = $conn->query($query);
             </div>
             <div class="nav-buttons">
                 <button popovertarget="add_product" class="add-item-btn">+ Add Product</button>
+            </div>
+            <div class="nav-buttons">
+                <form action="../../remote/logout.php" method="POST">
+                  <button type="submit" class="add-item-btn" name="logout">Log out</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -66,14 +72,14 @@ $result = $conn->query($query);
               <td><?php echo $data['productStocks']; ?></td>
               <td>
                 <ul id="actions">
-                  <li><button class="btn" popovertarget="view_product">View</button></li>
-                  <li><button class="btn" popovertarget="edit_product">Edit</button></li>
+                  <li><button class="btn" popovertarget="view_product-<?php echo $data['productID']; ?>">View</button></li>
+                  <li><button class="btn" popovertarget="edit_product-<?php echo $data['productID']; ?>">Edit</button></li>
                   <li><a href="../../remote/delete.php?id=<?php echo $data['productID']; ?>"><button class="btn">Delete</button></a></li>
                 </ul>
               </td>
             </tr>
 
-            <div id="view_product" popover>
+            <div class="view_product" id="view_product-<?php echo $data['productID']; ?>" popover>
               <h1>About the product</h1>
               <span>Name: <?php echo $data['productName'] ?></span>
               <img src="../images/<?php echo $data['productPicture'] ?>"></img>
@@ -82,10 +88,11 @@ $result = $conn->query($query);
               <span>Stocks: <?php echo $data['productStocks'] ?></span>
             </div>
 
-            <div id="edit_product" popover>
+            <div class="edit_product" id="edit_product-<?php echo $data['productID']; ?>" popover>
               <h1>Edit product</h1>
               <br>
               <form action="../../remote/edit.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="productID" value="<?php echo $data['productID']; ?>">
                 <label>Name</label>
                 <input type="text" name="name" value="<?php echo $data['productName']; ?>">
                 <label>Picture</label>
