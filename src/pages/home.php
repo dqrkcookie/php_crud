@@ -3,9 +3,9 @@
 include_once('../../config/connect.php');
 session_start();
 
-if(empty($_SESSION['username'])){
-  header("Location: ../../index.php");
-}
+// if(empty($_SESSION['username'])){
+//   header("Location: ../../index.php");
+// }
 
 $query = "SELECT * FROM product_tbl ORDER BY productID";
 
@@ -18,21 +18,21 @@ $stmt->execute();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lorem</title>
-  <link rel="icon" href="../images/icon/icon.jpg">
+  <title>Admin Dashboard</title>
+  <!-- <link rel="icon" href="../images/icon/icon.jpg"> -->
   <link rel="stylesheet" href="../style/home.css">
 </head>
 <body>
    <nav class="navbar">
         <div class="navbar-container">
             <div class="logo">
-                <a href="home.php">Shapi</a>
+                <a href="home.php">Admin</a>
             </div>
             <div class="nav-buttons">
                 <button popovertarget="add_product" class="add-item-btn">+ Add Product</button>
             </div>
             <div class="nav-buttons">
-                <form action="../../remote/logout.php" method="POST">
+                <form action="" method="POST">
                   <button type="submit" class="add-item-btn" name="logout">Log out</button>
                 </form>
             </div>
@@ -42,11 +42,11 @@ $stmt->execute();
     <div id="add_product" popover>
         <h1 style="text-align: center; color: black;">Add Product</h1>
         <form action="../../remote/addproduct.php" method="POST" enctype="multipart/form-data">
-            <input type="text" placeholder="Product Name" name="product_name">
-            <textarea placeholder="Product Details" name="product_details"></textarea>
-            <input type="text" placeholder="Price" name="product_price">
-            <input type="file" name="picture">
-            <input type="text" placeholder="Stocks" name="product_stocks">
+            <input type="text" placeholder="Product Name" name="product_name" required>
+            <textarea placeholder="Product Details" name="product_details" required></textarea>
+            <input type="text" placeholder="Price" name="product_price" required>
+            <input type="file" name="picture" required>
+            <input type="text" placeholder="Stocks" name="product_stocks" required>
             <input type="submit" value="Add Product" name="add_product">
         </form>
     </div>
@@ -74,7 +74,7 @@ $stmt->execute();
               <td>
                 <ul id="actions">
                   <li><button class="btn" popovertarget="view_product-<?php echo $data->productID; ?>">View</button></li>
-                  <li><button class="btn" popovertarget="edit_product-<?php echo $data->productID; ?>">Edit</button></li>
+                  <li><button class="btn" popovertarget="edit_product-<?php echo $data->productID; ?>" id="edit">Edit</button></li>
                   <li><a href="../../remote/delete.php?id=<?php echo $data->productID; ?>"><button class="btn">Delete</button></a></li>
                 </ul>
               </td>

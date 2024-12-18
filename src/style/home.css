@@ -236,3 +236,7 @@ button {
 #picture_btn:hover {
   background-color: #4d5eb9 !important;
 }
+
+#edit {
+  display: none;
+}

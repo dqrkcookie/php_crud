@@ -17,7 +17,7 @@ try{
 	}
 }catch(PDOException $e){
 	error_log('Connection failed: ' . $e->getMessage());
-	die('Server is down');
+	die();
 }
 
 ?>

@@ -41,13 +41,13 @@ input {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  margin: 2px 0;
+  margin: 4px 0;
   text-align: left;
 }
 
 input[type='submit'] {
   display: block;
-  background-color: #5cb85c;
+  background-color: #5b6edb;
   color: white;
   border: none;
   cursor: pointer;
@@ -58,7 +58,7 @@ input[type='submit'] {
 }
 
 input[type='submit']:hover {
-  background-color: #4cae4c;
+  background-color: #4d5eb9;
 }
 
 .signup {
@@ -71,19 +71,19 @@ p {
 
 span {
   margin: 2px;
+  cursor: pointer;
 }
 
 span:hover {
-  color: green;
-  cursor: pointer;
+  color: #4d5eb9;
 }
 
 #go_back {
   width: 100%;
   margin-bottom: 2rem;
+  cursor: pointer;
 }
 
 #go_back:hover {
-  color: green;
-  cursor: pointer;
+  color: #4d5eb9;
 }
