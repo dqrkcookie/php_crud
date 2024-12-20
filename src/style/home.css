@@ -39,6 +39,10 @@ body {
   align-items: center;
 }
 
+a {
+  text-decoration: none;
+}
+
 .add-item-btn {
   text-decoration: none;
   background-color: #5b6edb;
@@ -164,10 +168,11 @@ button {
 }
 
 .view_product img {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 150px;
   display: block;
   margin: 10px auto;
+  object-fit: cover;
 }
 
 .view_product span {
@@ -235,8 +240,4 @@ button {
 
 #picture_btn:hover {
   background-color: #4d5eb9 !important;
-}
-
-#edit {
-  display: none;
 }

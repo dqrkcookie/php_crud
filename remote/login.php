@@ -18,10 +18,25 @@ if(isset($_POST['login'])){
   if($data && password_verify($password, $data->password)){
     $_SESSION['username'] = $username;
     echo "<script> window.location.href = '../src/pages/main.php'; </script>";
+    die();
   } else {
-    header("Location: ../index.php");
+    header("Location: ../index.php?login=failed");
+    die();
   }
 
-  $pdo = null;
 }
+
+if(isset($_POST['loginAdmin'])){
+  if($_POST['username'] === 'admin' && $_POST['password'] === 'admin'){
+    $_SESSION['admin'] = $_POST['username'];
+    header("Location: ../src/pages/admin.php");
+    die();
+  } else {
+    header("Location: ../index.php?admin_login=failed");
+    die();
+  }
+}
+
+$pdo = null;
+
 ?>

@@ -31,7 +31,7 @@ form {
 
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0;
   align-self: flex-start;
   width: 100%;
 }
@@ -41,7 +41,7 @@ input {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  margin: 4px 0;
+  margin-bottom: 14px;
   text-align: left;
 }
 
@@ -51,7 +51,7 @@ input[type='submit'] {
   color: white;
   border: none;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 4px;
   text-align: center;
   font-size: 1rem;
   transition: background-color 0.2s ease;
@@ -63,6 +63,32 @@ input[type='submit']:hover {
 
 .signup {
   display: none;
+}
+
+#loginAdmin {
+  display: none;
+}
+
+#admin {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100vw;
+}
+
+#admin button {
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  padding: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+#admin button:hover {
+  color: #4d5eb9;
 }
 
 p {

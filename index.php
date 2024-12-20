@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="./src/style/style.css" >
 </head>
 <body>
+    <div id="admin">
+        <button id="admin_btn">Continue as Admin</button>
+    </div>
     <!-- // LOGIN -->
     <div class="login">
         <form action="./remote/login.php" method="POST">
@@ -23,6 +26,19 @@
             <input type="password" id="password" name="password" required>
             <input type="submit" name="login" value="Log in">
             <p>No account yet? <span id="go_signup">Sign Up</span></p>
+        </form>
+    </div>
+    <!-- LOGIN AS ADMIN -->
+    <div id="loginAdmin">
+        <form action="./remote/login.php" method="POST">
+            <h1> 
+                Admin Log In 
+            </h1>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <input type="submit" name="loginAdmin" value="Log in">
         </form>
     </div>
     <!-- // REGISTER -->
@@ -45,9 +61,9 @@
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password required">
+            <input type="password" id="password" name="password" required">
             <label for="picture">Profile Picture:</label>
-            <input type="file" id="picture" name="picture" required>
+            <input type="file" id="picture" name="picture" required accept="image/*">
             <input type="submit" name="signup" value="Sign Up">
         </form>
     </div>
