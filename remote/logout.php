@@ -5,7 +5,6 @@ session_start();
 
 if(isset($_POST['logout'])){
   unset($_SESSION['username']);
-  unset([$_SESSION['amount']]);
 
   echo "<script>window.location.href = '../index.php';</script>";
   die();

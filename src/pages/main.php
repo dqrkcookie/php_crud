@@ -44,6 +44,15 @@ try{
   error_log('Database error:' . $e->getMessage());
 }
 
+$cartItems = $stmt2->fetchAll();
+
+$rows = 0;
+$price = 0;
+foreach($cartItems as $item){
+  $rows++;
+  $price += ($item->price * $item->quantity);
+}
+  
 ?>
 
 <!DOCTYPE html>
@@ -58,6 +67,8 @@ try{
 <body>
   <?php $user = $stmt4->fetch(); ?>
   <?php $id = uniqid() ?>
+
+  <!-- NAV -->
   <nav>
     <ul>
       <li><a href="./main.php">Shapi</a></li>
@@ -71,7 +82,7 @@ try{
       </li>
       <div>
         <div>
-          <li><button popovertarget="cart" id="cart_btn">
+          <li><span id="items"><?php if($rows !== 0) {echo $rows;} ?></span><button popovertarget="cart" id="cart_btn">
             <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5b6edb;"></i>
           </button></li>
           <li><button id="place" popovertarget="orders">My Orders 
@@ -96,6 +107,7 @@ try{
     </ul>
   </nav>
 
+  <!-- SHOPPING CART -->
   <div class="cart" id="cart" popover>
     <table>
       <thead>
@@ -110,11 +122,12 @@ try{
         <tr>
           <h2 class="cartTitle">Shopping Cart</h2>
         </tr>
-        <?php while($data = $stmt2->fetch()) { ?>
+        <?php foreach($cartItems as $data) { ?>
+          <?php $rows++?>
         <tr>
           <td><?php echo $data->name ?></td>
           <td><?php echo $data->quantity ?></td>
-          <td>₱<?php echo $data->price ?></td>
+          <td>₱<?php echo number_format($data->price, 2) ?></td>
           <td>
             <a href="../../remote/deletefromcart.php?num=<?php echo $data->num ?>">
               <button class="btn">Delete</button>
@@ -125,11 +138,10 @@ try{
         <?php $stmt2->execute(); ?>
         <?php $data = $stmt2->fetchALL(); ?>
         <?php if(!empty($data)) { ?>
-        <?php $price = 0; foreach($data as $d) {$price += ($d->price * $d->quantity);} ?>
         <tr>
           <td class="checkout"><button popovertarget="sure">Checkout now</button></td>
           <td>Total</td>
-          <td class="total-price">₱<?php echo $price ?></td>
+          <td class="total-price">₱<?php echo number_format($price, 2) ?></td>
           <td></td>
         </tr>
         <?php } else { ?> 
@@ -142,20 +154,22 @@ try{
     </table>
   </div>
   
+  <!-- ORDER CONFIRMATION -->
   <div id="sure" popover>
     <span>Confirm your order</span>
     <span>Address: <?php echo $user->address ?></span>
     <span>MOP: Cash on Delivery</span>
     <div>
       <td class="checkout">
-        <a href="../../remote/checkout.php?checkout=true&username=<?php echo $username ?>&address=<?php echo $user->address ?>&payment=<?php echo $price ?>&total=<?php echo $price ?>&id=<?php echo $id ?>">
+        <a href="../../remote/checkout.php?checkout=true&username=<?php echo $username ?>&address=<?php echo $user->address ?>&payment=<?php echo $price ?>&total=<?php echo number_format($price, 2) ?>&id=<?php echo $id ?>">
           Yes
         </a>
       </td>
       <button id="no" onclick="hide()">No</button>
     </div>
   </div>
-
+  
+  <!-- PLACED ORDERS -->
   <div class="orders" id="orders" popover>
     <table>
       <thead>
@@ -173,7 +187,7 @@ try{
         <tr>
           <td><?php echo $data->name ?></td>
           <td><?php echo $data->quantity ?></td>
-          <td><?php echo $data->price ?></td>
+          <td><?php echo number_format($data->price, 2) ?></td>
         </tr>
         <?php } ?>
         <?php $stmt3->execute(); ?>
@@ -193,11 +207,10 @@ try{
             $notif_query = "SELECT * FROM order_notifications WHERE username = ? AND is_read = FALSE";
             $notif_stmt = $pdo->prepare($notif_query);
             $notif_stmt->execute([$username]);
-            $notification = $notif_stmt->fetch();
-            $decodeJson = json_decode($notification->items);
-            
+            $notification = $notif_stmt->fetch();      
             
             if($notification) { ?>
+            <?php $decodeJson = json_decode($notification->items); ?>
             <tr>
                 <td>*</td>
                 <td>Your order <span id="items"><?php foreach($decodeJson as $item){
@@ -212,10 +225,10 @@ try{
           <tr>
             <td></td>
             <td>
-              <a href="../../remote/orderresponse.php?id=<?php echo $data->id ?>&name=<?php echo $data->username ?>&amount=<?php echo $_SESSION['amount'] ?>&status=success">
+              <a href="../../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=success&isRead=<?php echo true ?>">
                 <button class="status_btn">Received</button>
               </a>
-              <a href="../../remote/orderresponse.php?id=<?php echo $data->id ?>&name=<?php echo $data->username ?>&amount=<?php echo $data->payment ?>&status=failed">
+              <a href="../../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=failed&isRead=<?php echo true ?>">
                 <button class="status_btn">Return</button>
               </a>
             </td>
@@ -232,6 +245,7 @@ try{
     </table>
   </div>
   
+  <!-- PURCHASE HISTORY -->
   <div class="cart" id="history" popover>
     <table>
       <thead>
@@ -263,6 +277,7 @@ try{
     </table>
   </div>
 
+  <!-- PROFILE SETTINGS -->
   <div class="profile-container" popover id="profile">
     <div class="profile-picture">
       <img src="../images/profile_picture/<?php echo $user->profile_picture ?>" alt="Profile Picture">
@@ -325,6 +340,7 @@ try{
     </form>
   </div>
 
+  <!-- DISPLAYING PRODUCTS -->
   <div class="for_sec">
     <section>
       <?php while($data = $stmt->fetch()) { ?>
@@ -333,7 +349,7 @@ try{
         <img src="../images/<?php echo $data->productPicture ?>"></img>
         <span id="d">See details..</span>
         <span id="details"><?php echo $data->productDetails ?></span>
-        <span id="price">Price: ₱<?php echo $data->productPrice ?></span>
+        <span id="price">Price: ₱<?php echo number_format($data->productPrice, 2) ?></span>
         <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
           <input type="hidden" name="name" value="<?php echo $data->productName ?>">
           <input type="hidden" name="price" value="<?php echo $data->productPrice ?>">
@@ -348,7 +364,7 @@ try{
       </div>
       <?php } ?>
     </section>
-    <script src="../js/index.js"></script>
   </div>
+  <script src="../js/index.js"></script>
 </body>
 </html>

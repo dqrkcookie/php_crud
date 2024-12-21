@@ -18,7 +18,8 @@ nav {
 }
 
 #items {
-  color: #5b6edb;
+  font-size: 1.1rem;
+  color: #4bcfea;
 }
 
 nav form {
@@ -159,7 +160,7 @@ button[type='submit']:hover,
   width: 250px;
   height: 150px;
   border-radius: 8px;
-  margin: 15px 0;
+  margin: 8px 0;
   object-fit: cover;
 }
 

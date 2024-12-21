@@ -7,7 +7,6 @@ try {
     $stmt2 = $pdo->query('SELECT * FROM transaction_history');
     $stmt3 = $pdo->query('SELECT * FROM users_tbl');
 
-
     $data = $stmt->fetchAll();
     $data1 = $stmt2->fetchAll();
     $data2 = $stmt3->fetchAll();

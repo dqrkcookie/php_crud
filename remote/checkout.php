@@ -15,17 +15,21 @@ try{
     $stmt->bindParam(1, $username);
     $stmt->execute();
 
-    if($checkout == true){
-        $data = $stmt->fetchALL();
-        $query = "INSERT INTO placed_order(name,quantity,price,username,amount,uniqOrderId)VALUES(?, ?, ?, ?, ?, ?)";
-
+    if ($checkout === 'true') {
+        $items = $stmt->fetchAll();
+        $query = "INSERT INTO placed_order(name,quantity,price,username,amount,uniqOrderId) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
-        foreach($data as $item){
-          $params = [$item->name, $item->quantity, $item->price, $item->username, $amount, $id];
-
-          if(!$stmt->execute($params)){
-            echo "<script>window.alert('Failed to checkout!')</script>";
-          }
+    
+        $amount = 0;
+        foreach ($items as $item) {
+            $amount += $item->price * $item->quantity; 
+        }
+    
+        foreach ($items as $item) {
+            $params = [$item->name, $item->quantity, $item->price, $item->username, $amount, $id];
+            if (!$stmt->execute($params)) {
+                echo "<script>window.alert('Failed to checkout!');</script>";
+            }
         }
     }
 

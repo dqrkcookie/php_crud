@@ -8,6 +8,12 @@ if (empty($_SESSION['admin'])) {
     exit();
 }
 
+try{
+    $stmt4 = $pdo->query('SELECT * FROM pending_orders');
+} catch (PDOException $e){
+    error_log("Database error:" . $e->getMessage());
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +37,11 @@ if (empty($_SESSION['admin'])) {
                 <a href="./addproduct.php">Add Product to Store</a>
             </li>
             <li>
-                <a href="./allorders.php">Pending Orders</a>
+                <?php $pending = $stmt4->fetchAll(); $rows = count($pending);?>
+                <a href="./allorders.php">Pending Orders <?php if($pending){ ?> 
+                    <span id="pending"> <?php echo $rows; ?></span>
+                 <?php } ?>
+                 </a>
             </li>
             <li>
                 <a href="./accepted.php">Accepted Orders</a>
