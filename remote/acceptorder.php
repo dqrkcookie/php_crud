@@ -16,20 +16,20 @@ try{
 
     $query = "UPDATE accepted_orders SET accept = ? WHERE id = ?";
     $stmt1 = $pdo->query('SELECT * FROM pending_orders');
-    $query2 = "DELETE FROM pending_orders WHERE username = ? AND payment =?";
-    $query3 = "INSERT INTO accepted_orders(username,address,numberOfItems,payment,accept)VALUES(?,?,?,?,?)";
+    $query2 = "DELETE FROM pending_orders WHERE username = ? AND orderId =?";
+    $query3 = "INSERT INTO accepted_orders(username,address,numberOfItems,payment,accept,items,uniqId)VALUES(?,?,?,?,?,?,?)";
     
     $data = $stmt1->fetch();
     
     $stmt3 = $pdo->prepare($query3);
-    $params1 = [$data->username, $data->address, $data->numberOfItems, $data->payment, $accept];
+    $params1 = [$data->username, $data->address, $data->numberOfItems, $data->payment, $accept, $items, $id];
     $stmt3->execute($params1);
     
     $stmt = $pdo->prepare($query);
     $stmt2 = $pdo->prepare($query2);
     $params = [$accept, $id];
     $stmt2->bindParam(1, $username);
-    $stmt2->bindParam(2, $payment);
+    $stmt2->bindParam(2, $id);
     $stmt->execute($params);
     $stmt2->execute();
 } catch (PDOException $e){

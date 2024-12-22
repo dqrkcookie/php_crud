@@ -26,7 +26,7 @@ if(isset($_POST['save'])){
         $extension = strtolower(end($getExtension));
 
         if (in_array($extension, $accepted_type)) {
-            if ($fileSize < 5000000) {
+            if ($fileSize < 10000000) {
                 $newFileName = uniqid('img_', true) . "." . $extension;
                 $fileDestination = '../src/images/profile_picture/' . $newFileName;
                 move_uploaded_file($fileTmpName, $fileDestination);
@@ -42,7 +42,7 @@ if(isset($_POST['save'])){
     if(!$stmt->execute($params)){
       echo "<script>window.alert('Failed to Update profile!');</script>";
     } else {
-      header("Location: ../src/pages/main.php?profile-update=success");
+      header("Location: ../src/pages/main.php");
     }
   }catch(PDOException $e){
     error_log("Error updating profile: " . $e->getMessage());

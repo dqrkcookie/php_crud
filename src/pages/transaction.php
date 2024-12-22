@@ -25,6 +25,7 @@ try{
           </tr>
         </thead>
         <tbody>
+          <?php if($stmt->rowCount() > 0) { ?>
           <?php while($data = $stmt->fetch()) {?>
           <tr>  
             <td><?php echo $data->orderID ?></td>
@@ -32,6 +33,11 @@ try{
             <td><?php echo $data->amount ?></td>
             <td><?php echo $data->transactionDate ?></td>
             <td><?php echo $data->status ?></td>
+          <?php } ?>
+          <?php } else { ?>
+                  <tr>
+                      <td colspan="5">No transaction history</td>
+                  </tr>
           <?php } ?>
         </tbody>
       </table>

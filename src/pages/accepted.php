@@ -27,6 +27,7 @@ try {
                 </tr>
             </thead>
             <tbody>
+                <?php if($stmt->rowCount() > 0) { ?>
                 <?php while ($data = $stmt->fetch()) { ?>
                     <tr>
                         <td><?php echo $data->id; ?></td>
@@ -36,7 +37,12 @@ try {
                         <td><?php echo $data->address; ?></td>
                         <td><?php echo $data->accept; ?></td>
                     </tr>
-                <?php } ?>
+                    <?php } ?>
+                <?php } else { ?>
+                            <tr>
+                                <td colspan="6">No accepted orders</td>
+                            </tr>
+                    <?php } ?>
             </tbody>
         </table>
     </div>

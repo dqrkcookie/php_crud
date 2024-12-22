@@ -19,7 +19,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Shapi Dashboard</title>
     <link rel="stylesheet" href="../style/home.css">
 </head>
 <body>
@@ -41,8 +41,13 @@ try {
             <input type="text" placeholder="Product Name" name="product_name" required>
             <textarea placeholder="Product Details" name="product_details" required></textarea>
             <input type="text" placeholder="Price" name="product_price" required>
-            <input type="file" name="picture" required>
-            <input type="text" placeholder="Stocks" name="product_stocks" required>
+            <input type="file" name="picture" required accept="image/*">
+            <label for="stock">Stock: </label>
+            <select name="product_stocks" id="stock" required>
+                <option value="">Select</option>
+                <option value="">In Stock</option>
+                <option value="">Out of Stock</option>
+            </select>
             <input type="submit" value="Add Product" name="add_product">
         </form>
     </div>
@@ -98,7 +103,12 @@ try {
                             <label>Price</label>
                             <input type="text" name="price" value="<?php echo $data->productPrice; ?>">
                             <label>Stock</label>
-                            <input type="text" name="stock" value="<?php echo $data->productStocks; ?>">
+                            <label for="stock">Stock: </label>
+                            <select name="stock" id="stock" required>
+                                <option value="">Select</option>
+                                <option value="Available">In Stock</option>
+                                <option value="Sold Out">Out of Stock</option>
+                            </select>
                             <input type="submit" value="Save changes" name="edit_btn" id="edit_btn">
                         </form>
                     </div>

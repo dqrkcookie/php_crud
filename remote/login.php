@@ -32,7 +32,7 @@ if(isset($_POST['loginAdmin'])){
     header("Location: ../src/pages/admin.php");
     die();
   } else {
-    header("Location: ../index.php?admin_login=failed");
+    header("Location: ../index.php");
     die();
   }
 }

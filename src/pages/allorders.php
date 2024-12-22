@@ -4,7 +4,7 @@ include("./nav.php");
 
 try{
   $stmt = $pdo->query('SELECT * FROM pending_orders');
-  $stmt1 = $pdo->prepare('SELECT * FROM placed_order WHERE uniqOrderId = ?');
+  $stmt1 = $pdo->prepare('SELECT * FROM pending_orders WHERE orderId = ?');
 }catch(PDOException $e){
   error_log('Database error: ' . $e->getMessage());
 }
@@ -29,33 +29,33 @@ try{
           </tr>
         </thead>
         <tbody>
+          <?php if($stmt->rowCount() > 0) { ?>
           <?php while($data = $stmt->fetch()) {?>
             <?php 
               $stmt1->bindParam(1, $data->orderId); 
               $stmt1->execute();
-              $orderDetails = $stmt1->fetchALL();
-
-              $listOfItems = [];
-              foreach($orderDetails as $item){
-                array_push($listOfItems, $item->name);
-              }
-
-              $toJson = json_encode($listOfItems);
-              $toUrl = urlencode($toJson);
+              $items = $stmt1->fetch();
+              $toUrl = urlencode($items->ListOfItems);
+              $listItems = json_decode($items->ListOfItems);
               ?>
           <tr>  
             <td><?php echo $data->id ?></td>
             <td><?php echo $data->username ?></td>
-            <td><?php echo $data->numberOfItems ?></td>
+            <td><?php foreach($listItems as $list) { echo $list . 'pcs' . ' '; } ?></td>
             <td>₱<?php echo $data->payment ?></td>
             <td><?php echo $data->address ?></td>
             <td>
               <div class="order-actions">
-                <a href="../../remote/acceptorder.php?accept=yes&orderid=<?php echo $data->id ?>&username=<?php echo $data->username ?>&payment=<?php echo $data->payment ?>&list=<?php echo $toUrl ?>"><button class="btn-accept">Accept Now</button></a>
+                <a href="../../remote/acceptorder.php?accept=yes&orderid=<?php echo $data->orderId ?>&username=<?php echo $data->username ?>&payment=<?php echo $data->payment ?>&list=<?php echo $toUrl ?>"><button class="btn-accept">Accept Now</button></a>
                 <button class="btn-reject">Reject</button>
               </div>
             </td>
           </tr>
+          <?php } ?>
+          <?php } else { ?>
+                  <tr>
+                      <td colspan="6">No pending orders</td>
+                  </tr>
           <?php } ?>
         </tbody>
       </table>

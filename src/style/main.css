@@ -18,8 +18,8 @@ nav {
 }
 
 #items {
-  font-size: 1.1rem;
-  color: #4bcfea;
+  font-size: 1rem;
+  color: #5b6edb;
 }
 
 nav form {
@@ -243,7 +243,7 @@ section {
   margin-top: 10%;
   border: 2px solid #5b6edb;
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.877);
-  animation: fadeIn 1s ease-in, goUp 1s ease-in;
+  animation: goUp 0.3s ease-out;
   overflow: hidden;
 }
 
@@ -263,29 +263,20 @@ section {
   background-color: white;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-}
-
 @keyframes goUp {
   0% {
-    transform: translateY(4px);
+    transform: translateY(16px);
   }
-  10% {
+  100% {
     transform: translateY(0);
   }
 }
 
 @keyframes fromSide {
   0% {
-    transform: translateX(4px);
+    transform: translateX(-16px);
   }
-  10% {
+  100% {
     transform: translateX(0);
   }
 }
@@ -299,7 +290,7 @@ section {
   margin: auto;
   margin-top: 10%;
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.877);
-  animation: fadeIn 1s ease-in, goUp 1s ease-in;
+  animation: goUp 0.3s ease-out;
 }
 
 #orders tbody {
@@ -357,7 +348,6 @@ tbody img {
   text-align: center;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  animation: fadeIn 1s ease-in, goUp 1s ease-in;
 }
 
 .checkout button {
@@ -388,7 +378,7 @@ tbody img {
   justify-self: flex-end;
   margin-top: 5rem;
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.877);
-  animation: fadeIn 1s ease-in, fromSide 1s ease-in;
+  animation: fromSide 0.3s ease-out;
 }
 
 .btn {
@@ -414,7 +404,7 @@ tbody img {
   box-shadow: 0 10px 25px rgba(91, 110, 219, 0.2), 0 5px 10px rgba(0, 0, 0, 0.1);
   min-width: 320px;
   border: 2px solid #5b6edb;
-  animation: fadeIn 1s ease-in, goUp 1s ease-in;
+  animation: goUp 0.3s ease-out;
 }
 
 #sure span {
@@ -566,7 +556,7 @@ tbody img {
   margin: auto;
   border: none;
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.877);
-  animation: fadeIn 1s ease-in, goUp 1s ease-in;
+  animation: goUp 0.3s ease-out;
 }
 
 .profile-picture {

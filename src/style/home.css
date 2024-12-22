@@ -144,6 +144,11 @@ button {
   font-size: 14px;
 }
 
+select {
+  padding: 4px;
+  margin: 2px;
+}
+
 .btn:hover {
   background-color: #e0e0e0;
 }
@@ -189,6 +194,12 @@ button {
   padding: 20px;
   border: 2px solid #cccccc;
   background-color: #f9f9f9;
+}
+
+.edit_product h1 {
+  text-align: center;
+  color: #333333;
+  margin-bottom: 15px;
 }
 
 .edit_product input,

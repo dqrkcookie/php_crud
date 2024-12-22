@@ -23,7 +23,7 @@ if (isset($_POST['edit_btn'])) {
             $extension = strtolower(end($getExtension));
         
             if (in_array($extension, $accepted_type)) {
-                if ($fileSize < 5000000) {
+                if ($fileSize < 10000000) {
                     $newFileName = uniqid('img_', true) . "." . $extension;
                     $picture = $newFileName;
                     $fileDestination = '../src/images/' . $newFileName;
@@ -55,7 +55,7 @@ if (isset($_POST['edit_btn'])) {
     }
 
     if ($stmt->execute()) {
-        header("Location: ../src/pages/addproduct.php?updated");
+        header("Location: ../src/pages/addproduct.php");
         exit();
     } else {
         echo "Failed to update product.";

@@ -15,7 +15,7 @@ try{
   $query3 = "SELECT * FROM placed_order WHERE username = ?";
   $query4 = "SELECT * FROM users_tbl WHERE username = ?";
   $query5 = "SELECT * FROM accepted_orders WHERE username = ? AND accept = ?";
-  $query6 = "SELECT * FROM transaction_history WHERE name = ?";
+  $query6 = "SELECT * FROM transaction_history WHERE name = ? ORDER BY transactionDate";
   $query7 = "SELECT * FROM pending_orders WHERE username = ?";
   $accept = 'yes';
 
@@ -86,7 +86,7 @@ foreach($cartItems as $item){
             <i class="fa-solid fa-cart-shopping fa-xl" style="color: #5b6edb;"></i>
           </button></li>
           <li><button id="place" popovertarget="orders">My Orders 
-            <i class="fa-solid fa-bag-shopping" style="color: #f0f0f0;"></i>
+            <i class="fa-solid fa-bag-shopping" style="color: #f0f0f0;"></i> <?php echo $stmt3->rowCount(); ?>
           </button></li>
           <li><button id="place" popovertarget="history">
             <i class="fa-solid fa-clock" style="color: #f0f0f0;"></i>
@@ -130,7 +130,7 @@ foreach($cartItems as $item){
           <td>₱<?php echo number_format($data->price, 2) ?></td>
           <td>
             <a href="../../remote/deletefromcart.php?num=<?php echo $data->num ?>">
-              <button class="btn">Delete</button>
+              <button class="btn">Remove</button>
             </a>
           </td>
         </tr>
@@ -183,7 +183,9 @@ foreach($cartItems as $item){
         <tr>
           <h2 class="cartTitle">Pending Orders</h2>
         </tr>
+        <?php $items = []; ?>
         <?php while($data = $stmt3->fetch()) { ?>
+          <?php array_push($items , $data->name) ?>
         <tr>
           <td><?php echo $data->name ?></td>
           <td><?php echo $data->quantity ?></td>
@@ -213,9 +215,7 @@ foreach($cartItems as $item){
             <?php $decodeJson = json_decode($notification->items); ?>
             <tr>
                 <td>*</td>
-                <td>Your order <span id="items"><?php foreach($decodeJson as $item){
-                  echo $item . ' ';
-                  }?></span> 
+                <td>Your order <span id="items"><?php echo implode('pcs & ', $decodeJson)?>pcs</span> 
                     will arrive soon! Prepare amount 
                     <span class="total-price">₱<?php echo $notification->amount; ?></span>
                     for payment
@@ -224,11 +224,15 @@ foreach($cartItems as $item){
             </tr>
           <tr>
             <td></td>
+            <?php 
+            $toJson = json_encode($items);
+            $toUrl = urlencode($toJson);
+            ?>
             <td>
-              <a href="../../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=success&isRead=<?php echo true ?>">
+              <a href="../../remote/orderresponse.php?id=<?php echo $notification->order_id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=success&isRead=<?php echo true ?>&item=<?php echo $toUrl ?>">
                 <button class="status_btn">Received</button>
               </a>
-              <a href="../../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=failed&isRead=<?php echo true ?>">
+              <a href="../../remote/orderresponse.php?id=<?php echo $notification->order_id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=failed&isRead=<?php echo true ?>&item=<?php echo $toUrl ?>">
                 <button class="status_btn">Return</button>
               </a>
             </td>
@@ -253,6 +257,7 @@ foreach($cartItems as $item){
           <td>Name</td>
           <td>Amount</td>
           <td>Date delivered</td>
+          <td>Report</td>
         </tr>
       </thead>
       <tbody>
@@ -269,9 +274,10 @@ foreach($cartItems as $item){
         </tr> 
         <?php } else { foreach ($data as $item) { ?> 
           <tr> 
-              <td><?php echo $item->name; ?></td> 
-              <td>₱<?php echo $item->amount; ?></td> 
+              <td><?php echo $item->name ?></td> 
+              <td>₱<?php echo $item->amount ?></td> 
               <td><?php if ($item->status == 'success') { echo    $item->transactionDate; } else { echo $item->status; } ?></td> 
+              <td><?php echo $item->status ?></td>
           </tr> <?php } } ?>
       </tbody>
     </table>
@@ -307,7 +313,7 @@ foreach($cartItems as $item){
   <div class="edit-profile-container" popover id="edit-profile">
     <form action="../../remote/editprofile.php" method="POST" enctype="multipart/form-data">
       <div class="profile-picture">
-        <img src="../images/profile_picture/<?php echo $user->profile_picture ?>" alt="Profile Picture">
+        <img src="../images/profile_picture/<?php echo $user->profile_picture ?>" alt="Profile Picture" required>
         <input type="file" name="profile" accept="image/*">
       </div>
 
@@ -344,24 +350,26 @@ foreach($cartItems as $item){
   <div class="for_sec">
     <section>
       <?php while($data = $stmt->fetch()) { ?>
-      <div class="item">
-        <h1><?php echo $data->productName ?></h1>
-        <img src="../images/<?php echo $data->productPicture ?>"></img>
-        <span id="d">See details..</span>
-        <span id="details"><?php echo $data->productDetails ?></span>
-        <span id="price">Price: ₱<?php echo number_format($data->productPrice, 2) ?></span>
-        <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
-          <input type="hidden" name="name" value="<?php echo $data->productName ?>">
-          <input type="hidden" name="price" value="<?php echo $data->productPrice ?>">
-          <input type="hidden" name="username" value="<?php echo $username ?>">
-          <button type="submit">Add to cart 
-            <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
-          </button>
-          <span class="qty">qty:
-            <input type="number" value="1" name="qty" id="qty">
-          </span>
-        </form>
+        <?php if($data->productStocks == 'Available') { ?>
+          <div class="item">
+            <h1><?php echo $data->productName ?></h1>
+            <img src="../images/<?php echo $data->productPicture ?>"></img>
+            <span id="d">See details..</span>
+            <span id="details"><?php echo $data->productDetails ?></span>
+            <span id="price">Price: ₱<?php echo number_format($data->productPrice, 2) ?></span>
+            <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
+              <input type="hidden" name="name" value="<?php echo $data->productName ?>">
+              <input type="hidden" name="price" value="<?php echo $data->productPrice ?>">
+              <input type="hidden" name="username" value="<?php echo $username ?>">
+              <button type="submit">Add to cart 
+                <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
+              </button>
+              <span class="qty">qty:
+                <input type="number" value="1" name="qty" id="qty" min="1">
+              </span>
+            </form>
       </div>
+        <?php } ?>
       <?php } ?>
     </section>
   </div>

@@ -24,12 +24,18 @@ try{
         </tr>
       </thead>
       <tbody>
+        <?php if($stmt->rowCount() > 0) { ?>
         <?php while($user = $stmt->fetch()) { ?>
         <tr>
           <td><?php echo $user->userID ?></td>
           <td><?php echo $user->name ?></td>
           <td><?php echo $user->email ?></td>
         </tr>
+        <?php } ?>
+        <?php } else { ?>
+                <tr>
+                    <td colspan="3">No users</td>
+                </tr>
         <?php } ?>
       </tbody>
     </table>

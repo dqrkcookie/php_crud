@@ -44,7 +44,7 @@ if(isset($_POST['add_product'])){
         window.location.href = '../src/pages/addproduct.php';
       </script>";
     } else {
-      header("Location: ../src/pages/addproduct.php?add_item=success");
+      header("Location: ../src/pages/addproduct.php?added");
     }
 }
 

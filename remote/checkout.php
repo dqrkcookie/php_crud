@@ -15,8 +15,17 @@ try{
     $stmt->bindParam(1, $username);
     $stmt->execute();
 
+    $itemsList = [];
+
     if ($checkout === 'true') {
         $items = $stmt->fetchAll();
+        
+        foreach($items as $i) {
+            array_push($itemsList, $i->name . ' ' . $i->quantity);
+        }
+
+        $toJson = json_encode($itemsList);
+
         $query = "INSERT INTO placed_order(name,quantity,price,username,amount,uniqOrderId) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
     
@@ -33,11 +42,6 @@ try{
         }
     }
 
-    $query = "DELETE FROM shapi_cart WHERE username = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(1, $username);
-    $stmt->execute();
-
     $query1 = "SELECT * FROM placed_order WHERE username = ?";
     $stmt1 = $pdo->prepare($query1);
     $stmt1->bindParam(1, $username);
@@ -49,15 +53,21 @@ try{
       $row_num++;
     }
 
-    $query2 = "INSERT INTO pending_orders(username,address,numberOfItems,payment,orderId)VALUES(?, ?, ?, ?, ?)";
+    $query2 = "INSERT INTO pending_orders(username,address,numberOfItems,payment,orderId, ListOfItems)VALUES(?, ?, ?, ?, ?, ?)";
     $stmt2 = $pdo->prepare($query2);
-    $params = [$username, $address, $row_num, $price, $id];
+    $params = [$username, $address, $row_num, $price, $id, $toJson];
     $stmt2->execute($params);
+
+    $query = "DELETE FROM shapi_cart WHERE username = ?";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(1, $username);
+    $stmt->execute();
+
 } catch (PDOException $e){
     error_log('Database error: ' . $e->getMessage());
 }
 
-header("Location: ../src/pages/main.php?checkout=success");
+header("Location: ../src/pages/main.php?checkoutsuccess");
 
 $pdo = null;
 

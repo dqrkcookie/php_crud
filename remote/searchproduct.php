@@ -71,9 +71,9 @@ foreach($cartItems as $item){
   <!-- NAV -->
   <nav>
     <ul>
-      <li><a href="../../src/pages/main.php">Shapi</a></li>
+      <li><a href="../src/pages/main.php">Shapi</a></li>
       <li>
-        <form action="./searchproduct.php" method="GET">
+        <form action="../remote/searchproduct.php" method="GET">
           <input type="text" placeholder="Search product" name="search" required>
           <button type="submit" name="look" value="products">
             <i class="fa-solid fa-sm fa-magnifying-glass" style="color: #f0f0f0;"></i>
@@ -96,7 +96,7 @@ foreach($cartItems as $item){
           </button></li>
         </div>
         <li>
-          <form action="../../remote/logout.php" method="POST">
+          <form action="../remote/logout.php" method="POST">
             <button type="submit" name="logout">Log out</button>
           </form>
         </li>
@@ -129,7 +129,7 @@ foreach($cartItems as $item){
           <td><?php echo $data->quantity ?></td>
           <td>₱<?php echo number_format($data->price, 2) ?></td>
           <td>
-            <a href="./deletefromcart.php?num=<?php echo $data->num ?>">
+            <a href="../remote/deletefromcart.php?num=<?php echo $data->num ?>">
               <button class="btn">Delete</button>
             </a>
           </td>
@@ -161,7 +161,7 @@ foreach($cartItems as $item){
     <span>MOP: Cash on Delivery</span>
     <div>
       <td class="checkout">
-        <a href="./checkout.php?checkout=true&username=<?php echo $username ?>&address=<?php echo $user->address ?>&payment=<?php echo $price ?>&total=<?php echo number_format($price, 2) ?>&id=<?php echo $id ?>">
+        <a href="../remote/checkout.php?checkout=true&username=<?php echo $username ?>&address=<?php echo $user->address ?>&payment=<?php echo $price ?>&total=<?php echo number_format($price, 2) ?>&id=<?php echo $id ?>">
           Yes
         </a>
       </td>
@@ -183,7 +183,9 @@ foreach($cartItems as $item){
         <tr>
           <h2 class="cartTitle">Pending Orders</h2>
         </tr>
+        <?php $items = []; ?>
         <?php while($data = $stmt3->fetch()) { ?>
+          <?php array_push($items , $data->name) ?>
         <tr>
           <td><?php echo $data->name ?></td>
           <td><?php echo $data->quantity ?></td>
@@ -213,9 +215,7 @@ foreach($cartItems as $item){
             <?php $decodeJson = json_decode($notification->items); ?>
             <tr>
                 <td>*</td>
-                <td>Your order <span id="items"><?php foreach($decodeJson as $item){
-                  echo $item . ' ';
-                  }?></span> 
+                <td>Your order <span id="items"><?php echo implode('pcs & ', $decodeJson)?>pcs</span> 
                     will arrive soon! Prepare amount 
                     <span class="total-price">₱<?php echo $notification->amount; ?></span>
                     for payment
@@ -224,11 +224,15 @@ foreach($cartItems as $item){
             </tr>
           <tr>
             <td></td>
+            <?php 
+            $toJson = json_encode($items);
+            $toUrl = urlencode($toJson);
+            ?>
             <td>
-              <a href="./orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=success&isRead=<?php echo true ?>">
+              <a href="../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=success&isRead=<?php echo true ?>&item=<?php echo $toUrl ?>">
                 <button class="status_btn">Received</button>
               </a>
-              <a href="./orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=failed&isRead=<?php echo true ?>">
+              <a href="../remote/orderresponse.php?id=<?php echo $notification->id ?>&name=<?php echo $username ?>&amount=<?php echo $notification->amount ?>&status=failed&isRead=<?php echo true ?>&item=<?php echo $toUrl ?>">
                 <button class="status_btn">Return</button>
               </a>
             </td>
@@ -305,7 +309,7 @@ foreach($cartItems as $item){
   </div>
 
   <div class="edit-profile-container" popover id="edit-profile">
-    <form action="./editprofile.php" method="POST" enctype="multipart/form-data">
+    <form action="../remote/editprofile.php" method="POST" enctype="multipart/form-data">
       <div class="profile-picture">
         <img src="../src/images/profile_picture/<?php echo $user->profile_picture ?>" alt="Profile Picture">
         <input type="file" name="profile" accept="image/*">
@@ -357,29 +361,31 @@ foreach($cartItems as $item){
 
   ?>
 
-  <div id="s_back"><a href=". ./src/pages/main.php"><button id="place">Go back</button></a>
+  <div id="s_back"><a href="../src/pages/main.php"><button id="place">Go back</button></a>
     </div>
     <div class="for_sec">
       <section>
         <?php foreach($data as $d) { ?>
-        <div class="item">
-          <h1><?php echo $d->productName ?></h1>
-          <img src="../src/images/<?php echo $d->productPicture ?>"></img>
-          <span id="d">See details..</span>
-          <span id="details"><?php echo $d->productDetails ?></span>
-          <span id="price">Price: ₱<?php echo $d->productPrice ?></span>
-          <form action="./addtocart.php" method="GET" class="cart-qty">
-            <input type="hidden" name="name" value="<?php echo $d->productName ?>">
-            <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
-            <input type="hidden" name="username" value="<?php echo $username ?>">
-            <button type="submit">Add to cart <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i></button>
-            <span class="qty">qty:<input type="number" value="1" name="qty" id="qty"></span>
-          </form>
-        </div>
+          <?php if($d->productStocks == 'Available') { ?>
+            <div class="item">
+              <h1><?php echo $d->productName ?></h1>
+              <img src="../src/images/<?php echo $d->productPicture ?>"></img>
+              <span id="d">See details..</span>
+              <span id="details"><?php echo $d->productDetails ?></span>
+              <span id="price">Price: ₱<?php echo $d->productPrice ?></span>
+              <form action="./addtocart.php" method="GET" class="cart-qty">
+                <input type="hidden" name="name" value="<?php echo $d->productName ?>">
+                <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
+                <input type="hidden" name="username" value="<?php echo $username ?>">
+                <button type="submit">Add to cart <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i></button>
+                <span class="qty">qty:<input type="number" value="1" name="qty" id="qty" min="1"></span>
+              </form>
+            </div>
+          <?php } ?>
         <?php } ?>
       </section>
     </div>   
-  <script src="../js/index.js"></script>
+  <script src="../pages/js/index.js"></script>
 </body>
 </html>
 

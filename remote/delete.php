@@ -11,9 +11,9 @@ try{
     $stmt->bindParam(1, $id);
     
     if($stmt->execute()){
-      header("Location: ../src/pages/addproduct.php?delete_product=failed");
+      header("Location: ../src/pages/addproduct.php");
     } else {
-      header("Location: ../src/pages/addproduct.php?delete_product=success");
+      header("Location: ../src/pages/addproduct.php");
     }
 } catch (PDOException $e){
     error_log('Database error: ' . $e->getMessage);
