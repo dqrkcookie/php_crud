@@ -8,6 +8,7 @@ if (isset($_POST['edit_btn'])) {
     $details = isset($_POST['details']) ? $_POST['details'] : '';
     $stock = isset($_POST['stock']) ? $_POST['stock'] : '';
     $price = isset($_POST['price']) ? $_POST['price'] : '';
+    $category = isset($_POST['category']) ? $_POST['category'] : '';
     $picture = '';
 
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === 0) {
@@ -34,7 +35,7 @@ if (isset($_POST['edit_btn'])) {
     }
 
     if ($picture) {
-        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, productPicture = ? WHERE productID = ?";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, productPicture = ?, category = ?WHERE productID = ?";
 
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(1, $name);
@@ -43,15 +44,17 @@ if (isset($_POST['edit_btn'])) {
         $stmt->bindParam(4, $stock);
         $stmt->bindParam(5, $picture);
         $stmt->bindParam(6, $productID);
+        $stmt->bindParam(7, $category);
     } else {
-        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ? WHERE productID = ?";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, category = ? WHERE productID = ?";
 
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(1, $name);
         $stmt->bindParam(2, $details);
         $stmt->bindParam(3, $price);
         $stmt->bindParam(4, $stock);
-        $stmt->bindParam(5, $productID);
+        $stmt->bindParam(5, $category);
+        $stmt->bindParam(6, $productID);
     }
 
     if ($stmt->execute()) {

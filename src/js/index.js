@@ -26,11 +26,3 @@ function switchForms() {
 }
 
 switchForms();
-
-function hide() {
-  const sure = document.getElementById('sure');
-
-  sure.style.display = 'none';
-
-  window.location.href = '../pages/main.php';
-}

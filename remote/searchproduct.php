@@ -385,7 +385,6 @@ foreach($cartItems as $item){
         <?php } ?>
       </section>
     </div>   
-  <script src="../pages/js/index.js"></script>
 </body>
 </html>
 

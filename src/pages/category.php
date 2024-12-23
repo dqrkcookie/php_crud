@@ -10,7 +10,7 @@ if(empty($_SESSION['username'])){
 $username = $_SESSION['username'];
 
 try{
-  $stmt = $pdo->query('SELECT * FROM product_tbl ORDER BY productID');
+  $product = $pdo->query('SELECT * FROM product_tbl ORDER BY productID');
   $query2 = "SELECT * FROM shapi_cart WHERE username = ?";
   $query3 = "SELECT * FROM placed_order WHERE username = ?";
   $query4 = "SELECT * FROM users_tbl WHERE username = ?";
@@ -34,7 +34,7 @@ try{
   $stmt6->bindParam(1, $username);
   $stmt7->bindParam(1, $username);
 
-  $data = $stmt->fetchAll();
+  $data = $product->fetchAll();
   $stmt2->execute();
   $stmt3->execute();
   $stmt4->execute();
@@ -60,7 +60,7 @@ foreach($data as $d){
     array_push($categories, $d->category);
   }
 }
-
+  
 ?>
 
 <!DOCTYPE html>
@@ -125,34 +125,6 @@ foreach($data as $d){
       </div>
   </div>
 
-  <!-- DISPLAYING PRODUCTS -->
-  <div class="for_sec">
-    <section>
-      <?php foreach($data as $d) { ?>
-        <?php if($d->productStocks == 'Available') { ?>
-          <div class="item">
-            <h1><?php echo $d->productName ?></h1>
-            <img src="../images/<?php echo $d->productPicture ?>"></img>
-            <span id="d">See details..</span>
-            <span id="details"><?php echo $d->productDetails ?></span>
-            <span id="price">Price: ₱<?php echo number_format($d->productPrice, 2) ?></span>
-            <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
-              <input type="hidden" name="name" value="<?php echo $d->productName ?>">
-              <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
-              <input type="hidden" name="username" value="<?php echo $username ?>">
-              <button type="submit">Add to cart 
-                <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
-              </button>
-              <span class="qty">qty:
-                <input type="number" value="1" name="qty" id="qty" min="1">
-              </span>
-            </form>
-          </div>
-        <?php } ?>
-      <?php } ?>
-    </section>
-  </div>
-
   <!-- SHOPPING CART -->
   <div class="cart" id="cart" popover>
     <table>
@@ -176,7 +148,7 @@ foreach($data as $d){
           <td>₱<?php echo number_format($data->price, 2) ?></td>
           <td>
             <a href="../../remote/deletefromcart.php?num=<?php echo $data->num ?>">
-              <button class="btn"><i class="fa-solid fa-minus" style="color: #5b6edb;"></i></button>
+              <button class="btn">Remove</button>
             </a>
           </td>
         </tr>
@@ -390,6 +362,46 @@ foreach($data as $d){
 
       <button type="submit" class="save-btn" name="save">Save Profile</button>
     </form>
+  </div>
+
+  <!-- DISPLAYING PRODUCTS -->
+   
+  <?php 
+  
+  $category = "SELECT * FROM product_tbl WHERE category = ?";
+  $stmt = $pdo->prepare($category);
+  if(isset($_GET['category'])){
+    $stmt->bindParam(1, $_GET['category']);
+    $stmt->execute();
+    $products = $stmt->fetchALL();
+  }
+  ?>
+
+  <div class="for_sec">
+    <section>
+      <?php foreach($products as $data) { ?>
+        <?php if($data->productStocks == 'Available') { ?>
+          <div class="item">
+            <h1><?php echo $data->productName ?></h1>
+            <img src="../images/<?php echo $data->productPicture ?>"></img>
+            <span id="d">See details..</span>
+            <span id="details"><?php echo $data->productDetails ?></span>
+            <span id="price">Price: ₱<?php echo number_format($data->productPrice, 2) ?></span>
+            <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
+              <input type="hidden" name="name" value="<?php echo $data->productName ?>">
+              <input type="hidden" name="price" value="<?php echo $data->productPrice ?>">
+              <input type="hidden" name="username" value="<?php echo $username ?>">
+              <button type="submit">Add to cart 
+                <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
+              </button>
+              <span class="qty">qty:
+                <input type="number" value="1" name="qty" id="qty" min="1">
+              </span>
+            </form>
+          </div>
+        <?php } ?>
+      <?php } ?>
+    </section>
   </div>
 
   <script>

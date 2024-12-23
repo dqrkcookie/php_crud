@@ -7,6 +7,7 @@ if(isset($_POST['add_product'])){
     $product_details = isset($_POST['product_details']) ? $_POST['product_details'] : '';
     $product_price = isset($_POST['product_price']) ? $_POST['product_price'] : '';
     $product_stocks = isset($_POST['product_stocks']) ? $_POST['product_stocks'] : '';
+    $product_category = isset($_POST['category']) ? $_POST['category'] : '';
 
     $newFileName = '';
 
@@ -30,7 +31,7 @@ if(isset($_POST['add_product'])){
         } 
     }
 
-    $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks)VALUES(?, ?, ?, ?, ?)";
+    $query = "INSERT INTO product_tbl(productName, productPrice, productDetails, productPicture, productStocks, category)VALUES(?, ?, ?, ?, ?, ?)";
 
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(1, $product_name);
@@ -38,6 +39,7 @@ if(isset($_POST['add_product'])){
     $stmt->bindParam(3, $product_details);
     $stmt->bindParam(4, $newFileName);
     $stmt->bindParam(5, $product_stocks);
+    $stmt->bindParam(6, $product_category);
 
     if(!$stmt->execute()){
       echo "<script> window.alert('Failed to add product');

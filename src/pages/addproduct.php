@@ -39,14 +39,15 @@ try {
         <h1 style="text-align: center; color: black;">Add Product</h1>
         <form action="../../remote/addproduct.php" method="POST" enctype="multipart/form-data">
             <input type="text" placeholder="Product Name" name="product_name" required>
+            <input type="text" placeholder="Category" name="category" required>
             <textarea placeholder="Product Details" name="product_details" required></textarea>
             <input type="text" placeholder="Price" name="product_price" required>
             <input type="file" name="picture" required accept="image/*">
             <label for="stock">Stock: </label>
             <select name="product_stocks" id="stock" required>
                 <option value="">Select</option>
-                <option value="">In Stock</option>
-                <option value="">Out of Stock</option>
+                <option value="Available">In Stock</option>
+                <option value="Sold Out">Out of Stock</option>
             </select>
             <input type="submit" value="Add Product" name="add_product">
         </form>
@@ -61,6 +62,7 @@ try {
                     <td>Details</td>
                     <td>Price</td>
                     <td>Stocks</td>
+                    <td>Category</td>
                     <td>Actions</td>
                 </tr>
             </thead>
@@ -72,6 +74,7 @@ try {
                         <td><?php echo $data->productDetails; ?></td>
                         <td><?php echo '₱' . $data->productPrice; ?></td>
                         <td><?php echo $data->productStocks; ?></td>
+                        <td><?php echo $data->category; ?></td>
                         <td>
                             <ul id="actions">
                                 <li><button class="btn" popovertarget="view_product-<?php echo $data->productID; ?>">View</button></li>
@@ -96,6 +99,8 @@ try {
                             <input type="hidden" name="productID" value="<?php echo $data->productID; ?>">
                             <label>Name</label>
                             <input type="text" name="name" value="<?php echo $data->productName; ?>">
+                            <label>Category</label>
+                            <input type="text" name="category" value="<?php echo $data->category ?>">
                             <label>Picture</label>
                             <input type="file" name="picture">
                             <label>Details</label>
