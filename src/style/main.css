@@ -231,6 +231,7 @@ section {
   place-items: center;
   grid-template-columns: repeat(5, 300px);
   gap: 6px;
+  margin-bottom: 4rem;
 }
 
 .cart {
@@ -678,6 +679,76 @@ tbody img {
 
 .show {
   display: block;
+}
+
+.slider {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: auto;
+  margin: 2rem auto;
+  padding: 1rem 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+}
+
+.slider-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider #nextBtn,
+#backBtn {
+  margin: 4px;
+  padding: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: #5b6edb;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.slider #nextBtn:hover,
+#backBtn:hover {
+  background-color: #4d5eb9;
+}
+
+.gallery {
+  display: flex;
+  overflow-x: scroll;
+  display: flex;
+}
+
+.gallery #div1 {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  width: auto;
+  margin: 2px;
+}
+
+.gallery #div1 .item {
+  margin: auto;
+}
+
+.gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery #div1 div {
+  width: auto;
+  height: auto;
+}
+
+#popular {
+  text-align: center;
+  color: #333;
 }
 
 @media screen and (max-width: 1008px) {

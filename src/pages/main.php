@@ -11,6 +11,7 @@ $username = $_SESSION['username'];
 
 try{
   $stmt = $pdo->query('SELECT * FROM product_tbl ORDER BY productID');
+  $slideProduct = $pdo->query("SELECT * FROM product_tbl WHERE showProduct = 'Slider'");
   $query2 = "SELECT * FROM shapi_cart WHERE username = ?";
   $query3 = "SELECT * FROM placed_order WHERE username = ?";
   $query4 = "SELECT * FROM users_tbl WHERE username = ?";
@@ -35,6 +36,7 @@ try{
   $stmt7->bindParam(1, $username);
 
   $data = $stmt->fetchAll();
+  $data1 = $slideProduct->fetchAll();
   $stmt2->execute();
   $stmt3->execute();
   $stmt4->execute();
@@ -125,11 +127,47 @@ foreach($data as $d){
       </div>
   </div>
 
+  <?php if(!empty($data1)) { ?>
+    <div id="popular">
+      <h1>Popular Products</h1>
+    </div>
+    <div class="slider">
+      <button id="backBtn"><</button>
+        <div class="gallery">
+          <div id="div1">
+          <?php foreach($data1 as $d) { ?>
+          <?php if($d->productStocks == 'Available') { ?>
+              <div class="item">
+                <h1><?php echo $d->productName ?></h1>
+                <img src="../images/<?php echo $d->productPicture ?>"></img>
+                <span id="d">See details..</span>
+                <span id="details"><?php echo $d->productDetails ?></span>
+                <span id="price">Price: ₱<?php echo number_format($d->productPrice, 2) ?></span>
+                <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
+                  <input type="hidden" name="name" value="<?php echo $d->productName ?>">
+                  <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
+                  <input type="hidden" name="username" value="<?php echo $username ?>">
+                  <button type="submit">Add to cart 
+                    <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
+                  </button>
+                  <span class="qty">qty:
+                    <input type="number" value="1" name="qty" id="qty" min="1">
+                  </span>
+                </form>
+              </div>
+            <?php } ?>
+          <?php } ?>
+          </div> 
+        </div>
+      <button id="nextBtn">></button>
+    </div>
+  <?php } ?>
+
   <!-- DISPLAYING PRODUCTS -->
   <div class="for_sec">
     <section>
       <?php foreach($data as $d) { ?>
-        <?php if($d->productStocks == 'Available') { ?>
+        <?php if($d->productStocks == 'Available' && $d->showProduct == 'Normal') { ?>
           <div class="item">
             <h1><?php echo $d->productName ?></h1>
             <img src="../images/<?php echo $d->productPicture ?>"></img>
@@ -417,6 +455,28 @@ foreach($data as $d){
         });
     }
     category();
+
+    function slider(){
+      const gallery = document.querySelector('.gallery');
+      const nextBtn = document.querySelector('#nextBtn');
+      const backBtn = document.querySelector('#backBtn');
+
+      gallery.style.scrollBehavior = 'smooth';
+      gallery.onwheel = (e) => {
+        e.preventDefault();
+        gallery.scrollLeft += e.deltaY;
+      }
+
+      nextBtn.onclick = () => {
+        gallery.scrollLeft += 500;
+      }
+
+      backBtn.onclick = () => {
+        gallery.scrollLeft -= 500;
+      }
+    }
+
+    slider();
   </script>
 </body>
 </html>

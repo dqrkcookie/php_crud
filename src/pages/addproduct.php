@@ -43,6 +43,13 @@ try {
             <textarea placeholder="Product Details" name="product_details" required></textarea>
             <input type="text" placeholder="Price" name="product_price" required>
             <input type="file" name="picture" required accept="image/*">
+            <label for="show">Display: </label>
+            <select name="show" id="show" required>
+                <option value="">Select</option>
+                <option value="Normal">Normal</option>
+                <option value="Slider">Slider</option>
+            </select>
+            <br>
             <label for="stock">Stock: </label>
             <select name="product_stocks" id="stock" required>
                 <option value="">Select</option>
@@ -107,7 +114,13 @@ try {
                             <textarea name="details"><?php echo $data->productDetails; ?></textarea>
                             <label>Price</label>
                             <input type="text" name="price" value="<?php echo $data->productPrice; ?>">
-                            <label>Stock</label>
+                            <label for="show">Display: </label>
+                            <select name="show" id="show" required>
+                                <option value="">Select</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Slider">Slider</option>
+                            </select>
+                            <br>
                             <label for="stock">Stock: </label>
                             <select name="stock" id="stock" required>
                                 <option value="">Select</option>

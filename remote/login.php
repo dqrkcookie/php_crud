@@ -15,9 +15,12 @@ if(isset($_POST['login'])){
 
   $data = $stmt->fetch();
 
-  if($data && password_verify($password, $data->password)){
+  if($data && password_verify($password, $data->password) && $data->status !== 'Blocked'){
     $_SESSION['username'] = $username;
     echo "<script> window.location.href = '../src/pages/main.php'; </script>";
+    die();
+  } else if($data->status == 'Blocked'){
+    header("Location: ../src/pages/blocked.php");
     die();
   } else {
     header("Location: ../index.php?login=failed");
