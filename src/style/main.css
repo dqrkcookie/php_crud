@@ -22,6 +22,11 @@ nav {
   color: #5b6edb;
 }
 
+hr {
+  width: 80%;
+  margin: 3rem auto;
+}
+
 nav form {
   display: flex;
 }

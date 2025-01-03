@@ -163,6 +163,8 @@ foreach($data as $d){
     </div>
   <?php } ?>
 
+  <hr>
+
   <!-- DISPLAYING PRODUCTS -->
   <div class="for_sec">
     <section>
