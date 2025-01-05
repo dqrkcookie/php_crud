@@ -125,6 +125,19 @@ foreach($data as $d){
       </div>
   </div>
 
+  <div class="sort-group dropdown">
+      <form action="./main.php" method="GET" class="sort-form">
+          <label for="sort">Sort by:</label>
+          <select id="sort" name="sort">
+              <option value="a-z">Product name: A-Z</option>
+              <option value="z-a">Product name: Z-A</option>
+              <option value="price-low">Product price: Low to High</option>
+              <option value="price-high">Product price: High to Low</option>
+          </select>
+          <input type="submit" value="✔" name="submit-sort">
+      </form>
+  </div>
+
   <!-- SHOPPING CART -->
   <div class="cart" id="cart" popover>
     <table>
@@ -380,7 +393,7 @@ foreach($data as $d){
   <div class="for_sec">
     <section>
       <?php foreach($products as $data) { ?>
-        <?php if($data->productStocks == 'Available') { ?>
+        <?php if($data->productStocks == 'Available' && $data->totalStocks > 0) { ?>
           <div class="item">
             <h1><?php echo $data->productName ?></h1>
             <img src="../images/<?php echo $data->productPicture ?>"></img>
@@ -398,6 +411,9 @@ foreach($data as $d){
                 <input type="number" value="1" name="qty" id="qty" min="1">
               </span>
             </form>
+            <?php if($d->totalStocks < 30) { ?>
+              <p><?php echo $d->totalStocks ?> stock(s) remaining</p>  
+            <?php } ?>
           </div>
         <?php } ?>
       <?php } ?>

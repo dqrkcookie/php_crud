@@ -127,6 +127,19 @@ foreach($data as $d){
       </div>
   </div>
 
+  <div class="sort-group dropdown">
+      <form action="./main.php" method="GET" class="sort-form">
+          <label for="sort">Sort by:</label>
+          <select id="sort" name="sort">
+              <option value="a-z">Product name: A-Z</option>
+              <option value="z-a">Product name: Z-A</option>
+              <option value="price-low">Product price: Low to High</option>
+              <option value="price-high">Product price: High to Low</option>
+          </select>
+          <input type="submit" value="✔" name="submit-sort">
+      </form>
+  </div>
+
   <?php if(!empty($data1)) { ?>
     <div id="popular">
       <h1>Popular Products</h1>
@@ -137,24 +150,29 @@ foreach($data as $d){
           <div id="div1">
           <?php foreach($data1 as $d) { ?>
           <?php if($d->productStocks == 'Available') { ?>
-              <div class="item">
-                <h1><?php echo $d->productName ?></h1>
-                <img src="../images/<?php echo $d->productPicture ?>"></img>
-                <span id="d">See details..</span>
-                <span id="details"><?php echo $d->productDetails ?></span>
-                <span id="price">Price: ₱<?php echo number_format($d->productPrice, 2) ?></span>
-                <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
-                  <input type="hidden" name="name" value="<?php echo $d->productName ?>">
-                  <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
-                  <input type="hidden" name="username" value="<?php echo $username ?>">
-                  <button type="submit">Add to cart 
-                    <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
-                  </button>
-                  <span class="qty">qty:
-                    <input type="number" value="1" name="qty" id="qty" min="1">
-                  </span>
-                </form>
-              </div>
+              <?php if($d->totalStocks > 0) { ?>
+                <div class="item">
+                  <h1><?php echo $d->productName ?></h1>
+                  <img src="../images/<?php echo $d->productPicture ?>"></img>
+                  <span id="d">See details..</span>
+                  <span id="details"><?php echo $d->productDetails ?></span>
+                  <span id="price">Price: ₱<?php echo number_format($d->productPrice, 2) ?></span>
+                  <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
+                    <input type="hidden" name="name" value="<?php echo $d->productName ?>">
+                    <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
+                    <input type="hidden" name="username" value="<?php echo $username ?>">
+                    <button type="submit">Add to cart 
+                      <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
+                    </button>
+                    <span class="qty">qty:
+                      <input type="number" value="1" name="qty" id="qty" min="1">
+                    </span>
+                  </form>
+                  <?php if($d->totalStocks < 30) { ?>
+                  <p><?php echo $d->totalStocks ?> stock(s) remaining</p>  
+                <?php } ?>
+                </div>
+              <?php } ?>
             <?php } ?>
           <?php } ?>
           </div> 
@@ -168,8 +186,39 @@ foreach($data as $d){
   <!-- DISPLAYING PRODUCTS -->
   <div class="for_sec">
     <section>
-      <?php foreach($data as $d) { ?>
-        <?php if($d->productStocks == 'Available' && $d->showProduct == 'Normal') { ?>
+      <?php if(!isset($_GET['submit-sort'])) { ?>
+        <?php foreach($data as $d) { ?>
+          <?php if($d->productStocks == 'Available' && $d->showProduct == 'Normal') { ?>
+            <div class="item">
+              <h1><?php echo $d->productName ?></h1>
+              <img src="../images/<?php echo $d->productPicture ?>"></img>
+              <span id="d">See details..</span>
+              <span id="details"><?php echo $d->productDetails ?></span>
+              <span id="price">Price: ₱<?php echo number_format($d->productPrice, 2) ?></span>
+              <form action="../../remote/addtocart.php" method="GET" class="cart-qty">
+                <input type="hidden" name="name" value="<?php echo $d->productName ?>">
+                <input type="hidden" name="price" value="<?php echo $d->productPrice ?>">
+                <input type="hidden" name="username" value="<?php echo $username ?>">
+                <button type="submit">Add to cart 
+                  <i class="fa-solid fa-cart-shopping fa-sm" style="color: #f0f0f0;"></i>
+                </button>
+                <span class="qty">qty:
+                  <input type="number" value="1" name="qty" id="qty" min="1">
+                </span>
+              </form>
+              <?php if($d->totalStocks < 30) { ?>
+                <p><?php echo $d->totalStocks ?> stock(s) remaining</p>  
+              <?php } ?>
+            </div>
+          <?php } ?>
+        <?php } ?>
+      <?php } ?>
+
+      <?php 
+
+  function sorted($products, $username) {
+    foreach ($products as $d) { ?>
+        <?php if($d->totalStocks > 0) { ?>
           <div class="item">
             <h1><?php echo $d->productName ?></h1>
             <img src="../images/<?php echo $d->productPicture ?>"></img>
@@ -187,9 +236,38 @@ foreach($data as $d){
                 <input type="number" value="1" name="qty" id="qty" min="1">
               </span>
             </form>
-          </div>
+            <?php if($d->totalStocks < 30) { ?>
+              <p><?php echo $d->totalStocks ?> stock(s) remaining</p>  
+            <?php } ?>
+        </div>
         <?php } ?>
-      <?php } ?>
+    <?php }
+  }
+
+  if (isset($_GET['submit-sort'])) {
+    $sort_query = '';
+    switch ($_GET['sort']) {
+        case 'a-z':
+            $sort_query = "WHERE showProduct = 'normal' ORDER BY productName ASC";
+            break;
+        case 'z-a':
+            $sort_query = "WHERE showProduct = 'normal' ORDER BY productName DESC";
+            break;
+        case 'price-low':
+            $sort_query = "WHERE showProduct = 'normal' ORDER BY productPrice ASC";
+            break;
+        case 'price-high':
+            $sort_query = "WHERE showProduct = 'normal' ORDER BY productPrice DESC";
+            break;
+    }
+
+    if ($sort_query) {
+        $sorted_products = $pdo->query("SELECT * FROM product_tbl $sort_query")->fetchAll();
+        sorted($sorted_products, $username);
+    }
+  }
+
+?>
     </section>
   </div>
 

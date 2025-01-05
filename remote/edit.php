@@ -10,6 +10,7 @@ if (isset($_POST['edit_btn'])) {
     $price = isset($_POST['price']) ? $_POST['price'] : '';
     $category = isset($_POST['category']) ? $_POST['category'] : '';
     $show = isset($_POST['show']) ? $_POST['show'] : '';
+    $t_stocks = isset($_POST['t_stocks']) ? $_POST['t_stocks'] : '';
     $picture = '';
 
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] === 0) {
@@ -36,7 +37,7 @@ if (isset($_POST['edit_btn'])) {
     }
 
     if ($picture) {
-        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, productPicture = ?, category = ?, showProduct = ? WHERE productID = ?";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, productPicture = ?, category = ?, showProduct = ?, totalStocks = ? WHERE productID = ?";
 
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(1, $name);
@@ -44,11 +45,11 @@ if (isset($_POST['edit_btn'])) {
         $stmt->bindParam(3, $price);
         $stmt->bindParam(4, $stock);
         $stmt->bindParam(5, $picture);
-        $stmt->bindParam(7, $productID);
-        $stmt->bindParam(5, $category);
-        $stmt->bindParam(6, $show);
+        $stmt->bindParam(8, $productID);
+        $stmt->bindParam(6, $category);
+        $stmt->bindParam(7, $t_stocks);
     } else {
-        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, category = ?, showProduct = ? WHERE productID = ?";
+        $query = "UPDATE product_tbl SET productName = ?, productDetails = ?, productPrice = ?, productStocks = ?, category = ?, showProduct = ?, totalStocks = ? WHERE productID = ?";
 
         $stmt = $pdo->prepare($query);
         $stmt->bindParam(1, $name);
@@ -56,8 +57,9 @@ if (isset($_POST['edit_btn'])) {
         $stmt->bindParam(3, $price);
         $stmt->bindParam(4, $stock);
         $stmt->bindParam(5, $category);
-        $stmt->bindParam(7, $productID);
+        $stmt->bindParam(8, $productID);
         $stmt->bindParam(6, $show);
+        $stmt->bindParam(7, $t_stocks);
     }
 
     if ($stmt->execute()) {

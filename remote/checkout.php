@@ -2,72 +2,74 @@
 
 include_once("../config/connect.php");
 
-try{
-    $checkout = $_GET['checkout'];
-    $username = $_GET['username'];
-    $address = $_GET['address'];
-    $price = $_GET['payment'];
-    $amount = $_GET['total'];
-    $id = $_GET['id'];
+try {
+   $checkout = $_GET['checkout'];
+   $username = $_GET['username'];
+   $address = $_GET['address'];
+   $price = $_GET['payment'];
+   $amount = $_GET['total'];
+   $id = $_GET['id'];
 
-    $query = "SELECT * FROM shapi_cart WHERE username = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(1, $username);
-    $stmt->execute();
+   $query = "SELECT * FROM shapi_cart WHERE username = ?";
+   $stmt = $pdo->prepare($query);
+   $stmt->execute([$username]);
 
-    $itemsList = [];
+   $itemsList = [];
+   $items = $stmt->fetchAll();
 
-    if ($checkout === 'true') {
-        $items = $stmt->fetchAll();
-        
-        foreach($items as $i) {
-            array_push($itemsList, $i->name . ' ' . $i->quantity);
-        }
+   if ($checkout === 'true' && !empty($items)) {
+       foreach ($items as $item) {
+           $productQuery = $pdo->prepare("SELECT * FROM product_tbl WHERE productName = ?");
+           $productQuery->execute([$item->name]);
+           $product = $productQuery->fetch();
 
-        $toJson = json_encode($itemsList);
+           if ($product) {
+               $newQty = $product->totalStocks - $item->quantity;
 
-        $query = "INSERT INTO placed_order(name,quantity,price,username,amount,uniqOrderId) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $pdo->prepare($query);
-    
-        $amount = 0;
-        foreach ($items as $item) {
-            $amount += $item->price * $item->quantity; 
-        }
-    
-        foreach ($items as $item) {
-            $params = [$item->name, $item->quantity, $item->price, $item->username, $amount, $id];
-            if (!$stmt->execute($params)) {
-                echo "<script>window.alert('Failed to checkout!');</script>";
-            }
-        }
-    }
+               if ($newQty < 0) {
+                   echo "<script>alert('Insufficient stocks. Reduce the quantity to checkout.');
+                   window.location.href = '../src/pages/main.php?checkout=failed';</script>";
+                   exit();
+               } else {
+                   $updateQuery = $pdo->prepare("UPDATE product_tbl SET totalStocks = ? WHERE productName = ?");
+                   $updateQuery->execute([$newQty, $item->name]);
+               }
 
-    $query1 = "SELECT * FROM placed_order WHERE username = ?";
-    $stmt1 = $pdo->prepare($query1);
-    $stmt1->bindParam(1, $username);
-    $stmt1->execute();
+               array_push($itemsList, $item->name . ' ' . $item->quantity);
+           }
+       }
 
-    $data = $stmt1->fetchALL();
-    $row_num = 0;
-    foreach($data as $d){
-      $row_num++;
-    }
+       $toJson = json_encode($itemsList);
 
-    $query2 = "INSERT INTO pending_orders(username,address,numberOfItems,payment,orderId, ListOfItems)VALUES(?, ?, ?, ?, ?, ?)";
-    $stmt2 = $pdo->prepare($query2);
-    $params = [$username, $address, $row_num, $price, $id, $toJson];
-    $stmt2->execute($params);
+       $query = "INSERT INTO placed_order(name, quantity, price, username, amount, uniqOrderId) VALUES (?, ?, ?, ?, ?, ?)";
+       $stmt = $pdo->prepare($query);
 
-    $query = "DELETE FROM shapi_cart WHERE username = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(1, $username);
-    $stmt->execute();
+       foreach ($items as $item) {
+           $params = [$item->name, $item->quantity, $item->price, $username, $amount, $id];
+           if (!$stmt->execute($params)) {
+               echo "<script>alert('Failed to check out!');</script>";
+               exit();
+           }
+       }
 
-} catch (PDOException $e){
-    error_log('Database error: ' . $e->getMessage());
+       $query2 = "INSERT INTO pending_orders(username, address, numberOfItems, payment, orderId, ListOfItems) VALUES (?, ?, ?, ?, ?, ?)";
+       $stmt2 = $pdo->prepare($query2);
+       $params = [$username, $address, count($items), $price, $id, $toJson];
+       $stmt2->execute($params);
+
+       $query = "DELETE FROM shapi_cart WHERE username = ?";
+       $stmt = $pdo->prepare($query);
+       $stmt->execute([$username]);
+
+   }
+
+   header("Location: ../src/pages/main.php?checkoutsuccess");
+   exit();
+
+} catch (PDOException $e) {
+   error_log('Database error: ' . $e->getMessage());
+   echo "<script>alert('Something went wrong. Please try again later.');</script>";
 }
-
-header("Location: ../src/pages/main.php?checkoutsuccess");
 
 $pdo = null;
 

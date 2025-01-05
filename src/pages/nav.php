@@ -53,6 +53,9 @@ try{
                 <a href="./users.php">User List</a>
             </li>
             <li>
+                <a href="./adminlist.php">Shapi Admin</a>
+            </li>
+            <li>
                 <div class="nav-buttons">
                     <form action="../../remote/logout.php" method="POST">
                         <button type="submit" class="add-item-btn" name="adminLogout">Log Out</button>

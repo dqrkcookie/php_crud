@@ -2,6 +2,12 @@
 
 include("./nav.php");
 
+if($_SESSION['admin'] == 'content manager' || $_SESSION['admin'] == 'sales representative'){
+  echo "<script>alert('Only Administrator has the permission to enter this page!');
+    window.location.href = './admin.php?access=denied';
+    </script>";
+}
+
 try{
   $stmt = $pdo->query("SELECT * FROM users_tbl");
 }catch(PDOException $e){

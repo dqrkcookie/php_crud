@@ -6,6 +6,12 @@ if (empty($_SESSION['admin'])) {
     header("Location: ../../index.php");
 }
 
+if($_SESSION['admin'] == 'sales representative'){
+    echo "<script>alert('Only Administrator and Manager have the permission to enter this page!');
+    window.location.href = './admin.php?access=denied';
+    </script>";
+}
+
 try {
     $stmt = $pdo->query('SELECT * FROM product_tbl ORDER BY productID');
 } catch (PDOException $e) {
@@ -45,17 +51,19 @@ try {
             <input type="file" name="picture" required accept="image/*">
             <label for="show">Display: </label>
             <select name="show" id="show" required>
-                <option value="">Select</option>
+                <option value="">Set</option>
                 <option value="Normal">Normal</option>
                 <option value="Slider">Slider</option>
             </select>
-            <br>
             <label for="stock">Stock: </label>
             <select name="product_stocks" id="stock" required>
-                <option value="">Select</option>
+                <option value="">Set</option>
                 <option value="Available">In Stock</option>
                 <option value="Sold Out">Out of Stock</option>
             </select>
+            <br><br>
+            <label>Total stocks:</label>
+            <input type="number" name="t_stocks">
             <input type="submit" value="Add Product" name="add_product">
         </form>
     </div>
@@ -69,6 +77,7 @@ try {
                     <td>Details</td>
                     <td>Price</td>
                     <td>Stocks</td>
+                    <td>Total stocks</td>
                     <td>Category</td>
                     <td>Actions</td>
                 </tr>
@@ -81,6 +90,12 @@ try {
                         <td><?php echo $data->productDetails; ?></td>
                         <td><?php echo '₱' . $data->productPrice; ?></td>
                         <td><?php echo $data->productStocks; ?></td>
+                        <td>
+                            <?php echo $data->totalStocks; ?>
+                            <?php if($data->totalStocks < 30) { ?>
+                                <p>Low stocks!</p>
+                            <?php } ?>
+                        </td>
                         <td><?php echo $data->category; ?></td>
                         <td>
                             <ul id="actions">
@@ -116,17 +131,19 @@ try {
                             <input type="text" name="price" value="<?php echo $data->productPrice; ?>">
                             <label for="show">Display: </label>
                             <select name="show" id="show" required>
-                                <option value="">Select</option>
+                                <option value="">Set</option>
                                 <option value="Normal">Normal</option>
                                 <option value="Slider">Slider</option>
                             </select>
-                            <br>
                             <label for="stock">Stock: </label>
                             <select name="stock" id="stock" required>
-                                <option value="">Select</option>
+                                <option value="">Set</option>
                                 <option value="Available">In Stock</option>
                                 <option value="Sold Out">Out of Stock</option>
                             </select>
+                            <br><br>
+                            <label>Total stocks:</label>
+                            <input type="number" name="t_stocks" value="<?php echo $data->totalStocks; ?>">
                             <input type="submit" value="Save changes" name="edit_btn" id="edit_btn">
                         </form>
                     </div>

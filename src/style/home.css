@@ -144,9 +144,15 @@ button {
   font-size: 14px;
 }
 
+p {
+  margin-top: 4px;
+  color: #5b6edb;
+}
+
 select {
   padding: 4px;
   margin: 2px;
+  width: 4.1rem;
 }
 
 .btn:hover {

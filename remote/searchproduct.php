@@ -366,7 +366,7 @@ foreach($cartItems as $item){
     <div class="for_sec">
       <section>
         <?php foreach($data as $d) { ?>
-          <?php if($d->productStocks == 'Available') { ?>
+          <?php if($d->productStocks == 'Available' && $d->totalStocks > 0) { ?>
             <div class="item">
               <h1><?php echo $d->productName ?></h1>
               <img src="../src/images/<?php echo $d->productPicture ?>"></img>

@@ -30,10 +30,17 @@ if(isset($_POST['login'])){
 }
 
 if(isset($_POST['loginAdmin'])){
-  if($_POST['username'] === 'admin' && $_POST['password'] === 'admin'){
-    $_SESSION['admin'] = $_POST['username'];
-    header("Location: ../src/pages/admin.php");
-    die();
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+
+  $admin = $pdo->query("SELECT * FROM shapi_admin WHERE username = '$username'")->fetch();
+
+  if($admin){
+    if($admin->password == $password){
+      $_SESSION['admin'] = $admin->role;
+      header("Location: ../src/pages/admin.php");
+      die();
+    }
   } else {
     header("Location: ../index.php");
     die();
