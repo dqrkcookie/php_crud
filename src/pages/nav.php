@@ -4,7 +4,7 @@ include_once("../../config/connect.php");
 session_start();
 
 if (empty($_SESSION['admin'])) {
-    header("Location: ../../index.php");
+    header("Location: ./login.php");
     exit();
 }
 

@@ -40,7 +40,7 @@ if(isset($_POST['signup'])){
   if(!$stmt->execute($params)){ 
     die('Unable to create an account');
   } else {
-    header("Location: ../index.php");
+    header("Location: ../src/pages/login.php");
     die();
   }
 }
