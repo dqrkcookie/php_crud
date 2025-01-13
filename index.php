@@ -22,7 +22,7 @@
             <a href="./src/pages/login.php" class="shop-now-btn" id="here">Shop Now</a>
         </div>
         <div class="hero-image">
-            <img src="./src/images/icon/multi-colored-water-splashing-black-backdrop.png" alt="Hero Image">
+            <img src="./src/images/icon/block-tech.png" alt="Hero Image">
         </div>
     </section>
 
