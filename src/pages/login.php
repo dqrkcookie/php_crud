@@ -30,7 +30,7 @@
     </div>
     <!-- LOGIN AS ADMIN -->
     <div id="loginAdmin">
-        <form action="./remote/login.php" method="POST">
+        <form action="../../remote/login.php" method="POST">
             <h1> 
                 Admin Log In 
             </h1>
